@@ -1,0 +1,28 @@
+{
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"downlevelIteration": true,
+		"jsx": "react",
+		"jsxFactory": "Roact.jsx",
+		"jsxFragmentFactory": "Roact.createFragment",
+		"module": "commonjs",
+		"moduleResolution": "Node",
+		"noLib": true,
+		"resolveJsonModule": true,
+		"experimentalDecorators": true,
+		"forceConsistentCasingInFileNames": true,
+		"moduleDetection": "force",
+		"strict": true,
+		"target": "ESNext",
+		"skipLibCheck": true,
+		"typeRoots": ["./node_modules/@rbxts", "./node_modules/@flamework"],
+		"types": ["compiler-types", "types"],
+		"baseUrl": ".",
+		"paths": {
+			"@common/*": ["./places/common/src/*"],
+			"@lobby/*": ["./places/lobby/src/*"],
+			"@game/*": ["./places/game/src/*"]
+		},
+		"plugins": [{ "transform": "rbxts-transformer-flamework" }]
+	}
+}

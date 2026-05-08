@@ -1,0 +1,44 @@
+{
+	"name": "flamework-multiplace-template",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"build": "bun run build:lobby && bun run build:game",
+		"build:lobby": "bun scripts/generate-build-hash.ts && bun scripts/clean.ts places/lobby/out && rbxtsc -p places/lobby/tsconfig.build.json",
+		"build:game": "bun scripts/generate-build-hash.ts && bun scripts/clean.ts places/game/out && rbxtsc -p places/game/tsconfig.build.json",
+		"watch:lobby": "bun scripts/generate-build-hash.ts && bun scripts/clean.ts places/lobby/out && rbxtsc -w -p places/lobby/tsconfig.build.json",
+		"watch:game": "bun scripts/generate-build-hash.ts && bun scripts/clean.ts places/game/out && rbxtsc -w -p places/game/tsconfig.build.json",
+		"serve:lobby": "rojo serve --port 34872 places/lobby/default.project.json",
+		"serve:game": "rojo serve --port 34873 places/game/default.project.json",
+		"serve:all": "bun scripts/serve-all.ts",
+		"lint": "eslint . --fix; biome check --write",
+		"format": "biome format --write ."
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.4.9",
+		"@rbxts/compiler-types": "^3.0.0-types.0",
+		"@rbxts/types": "^1.0.912",
+		"bun-types": "^1.3.11",
+		"eslint": "^9.39.4",
+		"eslint-plugin-roblox-ts": "^1.4.0",
+		"rbxts-transformer-flamework": "^1.3.2",
+		"roblox-ts": "^3.0.0",
+		"typescript": "5.5.3",
+		"typescript-eslint": "^8.57.2"
+	},
+	"dependencies": {
+		"@flamework/core": "^1.3.2",
+		"@flamework/networking": "^1.3.2",
+		"@rbxts/charm": "^0.10.0",
+		"@rbxts/immut": "0.4.4-ts.0",
+		"@rbxts/lapis": "^0.3.8",
+		"@rbxts/maid": "^1.1.0",
+		"@rbxts/object-utils": "^1.0.4",
+		"@rbxts/roact": "^3.0.1",
+		"@rbxts/roact-hooked": "^2.6.2",
+		"@rbxts/services": "^1.6.0",
+		"@rbxts/signal": "^1.1.1",
+		"@rbxts/squash": "^3.0.0-ts.0",
+		"@rbxts/t": "^3.2.1"
+	}
+}

@@ -1,0 +1,7 @@
+node_modules/
+places/*/node_modules/
+places/*/out/
+places/*/include/
+places/*/flamework.build
+places/common/src/shared/constants/build.ts
+.DS_Store

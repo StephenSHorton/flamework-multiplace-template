@@ -1,0 +1,5 @@
+[tools]
+rojo = "rojo-rbx/rojo@7.5.1"
+
+[trust]
+allow-list = ["rojo-rbx"]

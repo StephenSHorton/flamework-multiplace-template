@@ -1,0 +1,13 @@
+import { Controller, type OnStart } from "@flamework/core";
+import { LobbyManager, type LobbyReplicationPayload } from "@lobby/shared";
+import { Events, Functions } from "../network";
+
+@Controller({})
+export class LobbyReplicationController implements OnStart {
+	public onStart(): void {
+		Events.lobby.sync.connect((payload: LobbyReplicationPayload) =>
+			LobbyManager.setState(payload.state),
+		);
+		void Functions.requestLobbyHydration.invoke();
+	}
+}
