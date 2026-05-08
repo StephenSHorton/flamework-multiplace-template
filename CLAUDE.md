@@ -56,6 +56,88 @@ Use these — never reach across places with relative paths.
 | `@game/server/*`   | `places/game/src/server/*`             |
 | `@game/client/*`   | `places/game/src/client/*`             |
 
+## Composable Architecture (Core Principle)
+
+This template is built around composable architecture. The multi-place layout makes the principle more important, not less — `common/` services need to work across places, and each place's features must be self-contained.
+
+### Components are self-contained orchestrators
+
+- A component owns ALL logic for its feature (state, rules, events)
+- Components reach out to generic services only for capabilities they don't own
+- Components do NOT delegate feature logic to feature-specific services
+
+### Services are generic, reusable capabilities
+
+- Domain-agnostic (e.g., `DataStoreService`, not `LobbyMatchmakingService`)
+- A service shouldn't know about specific features that use it
+- Services provide "verbs" that any system can use
+
+### Three-Tier Module Layout
+
+| Layer | Location | Purpose |
+|-------|----------|---------|
+| **Core** | `places/common/src/shared/core/` | Game-agnostic primitives (Clock, replication helpers) — reusable across projects |
+| **Domain** | `places/common/src/shared/{data,...}/` | Project-specific shared modules that follow the player across places |
+| **Place** | `places/<place>/src/shared/<place>/` | Place-local modules — die when the server dies |
+
+Core never references Domain. Domain never references a specific Place's modules. Each Place freely composes Core and Domain.
+
+### Example
+
+❌ **Wrong** (place-specific service in common):
+
+```
+places/common/src/server/services/LobbyMatchmakingService.ts  // only used by lobby
+```
+
+❌ **Wrong** (component delegating its core logic):
+
+```
+LobbyComponent → LobbyMatchmakingService (does all the lobby logic)
+```
+
+✅ **Correct** (composable):
+
+```
+LobbyStateService (self-contained, in places/lobby/)
+├── Countdown logic, teleport gating, state machine
+└── When teleporting → DataStoreService.preflushPlayer(player)  (generic, in common/)
+
+GameStateService (self-contained, in places/game/)
+├── Round timer, return-to-lobby logic
+└── When returning → DataStoreService.preflushPlayer(player)  (same generic service)
+```
+
+`DataStoreService` doesn't know about lobbies or rounds — it only knows about persisting player data and stamping session time. Both places use it the same way.
+
+### Event-Based Communication
+
+Components communicate through events/signals, not direct method calls on each other:
+
+**1. Direct Callbacks (local, same context)**
+Use callback functions or signal instances when modules share a context or have a natural parent-child relationship (e.g., `PlayerStateService.onPlayerLoaded(cb)`).
+
+**2. Global Event Bus (cross-system, decoupled)**
+Use for communication across unrelated systems. The Flamework networking layer is your bus across the server-client boundary; for server-internal cross-system events, use `@rbxts/signal`.
+
+**Rule of thumb:** If you'd need to hunt for a reference just to talk to something, use the event bus instead.
+
+### No Direct State Mutation
+
+Modules expose public methods or raise signals. No module should reach into another module and set its fields directly. The `DataManager.updateData(id, draft => ...)` pattern is the only correct way to mutate persistent data — never call the underlying atom directly from outside the manager. Same for `LobbyManager` and `GameManager`.
+
+### Decision Guide
+
+When designing a new system, ask:
+
+| Question | If Yes → |
+|----------|----------|
+| Is this logic specific to one feature? | Put it in the component or place-local service |
+| Could multiple features use this? | Make it a generic service in `common/server/` |
+| Does the service name include a feature or place name? | Rename to be generic, or move it to that place |
+| Does the component delegate its core logic? | Refactor to be self-contained |
+| Is this state place-local or persistent? | Place-local → place atom; persistent → `Data` type |
+
 ## Architecture
 
 ### Persistent vs transient data — keep them separate
@@ -132,6 +214,8 @@ To test real persistence in Studio, change the constant to `false` (and accept t
 - Prefer `produce` from `@rbxts/immut` for state mutations (already used by `DataManager.updateData`, `LobbyManager.updateState`).
 - Per-feature networking — define events on the place that owns them via module augmentation, not in a single monolith.
 - Barrel `index.ts` files in every directory; import `from "@common/shared"` not `from "@common/shared/data/state/manager"`.
+- **One module per file.** File name matches the primary export.
+- **Keep modules small.** If a module is doing two distinct things, split it.
 
 ## Cleanup with Maid
 
