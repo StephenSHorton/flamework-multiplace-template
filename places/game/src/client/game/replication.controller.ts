@@ -8,6 +8,6 @@ export class GameReplicationController implements OnStart {
 		Events.game.sync.connect((payload: GameReplicationPayload) =>
 			GameManager.setState(payload.state),
 		);
-		void Functions.requestGameHydration.invoke();
+		Functions.requestGameHydration.invoke();
 	}
 }

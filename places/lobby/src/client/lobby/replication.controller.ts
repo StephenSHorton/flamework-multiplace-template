@@ -8,6 +8,6 @@ export class LobbyReplicationController implements OnStart {
 		Events.lobby.sync.connect((payload: LobbyReplicationPayload) =>
 			LobbyManager.setState(payload.state),
 		);
-		void Functions.requestLobbyHydration.invoke();
+		Functions.requestLobbyHydration.invoke();
 	}
 }

@@ -10,7 +10,7 @@ export default defineConfig(
 	eslint.configs.recommended,
 	...tseslint.configs.recommended,
 	{
-		files: ["src/**/*.ts", "src/**/*.tsx"],
+		files: ["places/**/src/**/*.ts", "places/**/src/**/*.tsx"],
 		plugins: {
 			"@typescript-eslint": tseslint.plugin,
 			"roblox-ts": robloxTs,
@@ -20,7 +20,7 @@ export default defineConfig(
 			parserOptions: {
 				ecmaVersion: 2018,
 				sourceType: "module",
-				project: "./tsconfig.json",
+				project: "./tsconfig.base.json",
 				ecmaFeatures: {
 					jsx: true,
 				},
