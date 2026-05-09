@@ -1,7 +1,7 @@
-import { Service, type OnStart } from "@flamework/core";
-import { Players } from "@rbxts/services";
 import { Clock } from "@common/shared";
+import { type OnStart, Service } from "@flamework/core";
 import { GameManager, GameReplica } from "@game/shared";
+import { Players } from "@rbxts/services";
 import { Events, Functions } from "../network";
 
 const SYNC_INTERVAL = 1 / 10;
@@ -12,14 +12,17 @@ export class GameReplicationService implements OnStart {
 	private readonly clock = new Clock(SYNC_INTERVAL);
 
 	public onStart(): void {
-		Functions.requestGameHydration.setCallback((player) => this.sendSnapshot(player));
+		Functions.requestGameHydration.setCallback((player) =>
+			this.sendSnapshot(player),
+		);
 		this.clock.on(() => this.flushDelta());
 	}
 
 	private flushDelta(): void {
 		const payload = this.replica.update(GameManager.getState());
 		if (!payload) return;
-		for (const player of Players.GetPlayers()) Events.game.sync(player, payload);
+		for (const player of Players.GetPlayers())
+			Events.game.sync(player, payload);
 	}
 
 	private sendSnapshot(player: Player): void {

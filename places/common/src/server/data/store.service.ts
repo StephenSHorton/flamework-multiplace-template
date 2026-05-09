@@ -1,13 +1,13 @@
-import { Service, type OnStart } from "@flamework/core";
-import { effect } from "@rbxts/charm";
-import { type Document, createCollection } from "@rbxts/lapis";
 import {
 	type Data,
-	DEFAULT_DATA,
 	DataManager,
+	DEFAULT_DATA,
 	IS_DATA,
 	normalizeData,
 } from "@common/shared";
+import { type OnStart, Service } from "@flamework/core";
+import { effect } from "@rbxts/charm";
+import { createCollection, type Document } from "@rbxts/lapis";
 import { PlayerStateService } from "../players";
 import { COLLECTION_NAME, DOCUMENT_PREFIX, USE_MOCK_DATA } from "./constants";
 
@@ -25,9 +25,7 @@ export class DataStoreService implements OnStart {
 		// normalizeData fills every field with its default when missing, so it
 		// works as a universal "add new fields" migration. To rename or transform
 		// existing values, add a separate Migration<unknown> entry first.
-		migrations: [
-			(data): Data => normalizeData(data as Partial<Data>),
-		],
+		migrations: [(data): Data => normalizeData(data as Partial<Data>)],
 	});
 
 	private readonly docs = new Map<number, Document<Data>>();
@@ -95,7 +93,9 @@ export class DataStoreService implements OnStart {
 				await doc
 					.close()
 					.catch((e) =>
-						warn(`[DataStoreService]: close on early-exit failed for ${id}: ${tostring(e)}`),
+						warn(
+							`[DataStoreService]: close on early-exit failed for ${id}: ${tostring(e)}`,
+						),
 					);
 				return;
 			}
@@ -123,7 +123,9 @@ export class DataStoreService implements OnStart {
 			this.subs.set(id, unsubscribe);
 			this.docs.set(id, doc);
 		} catch (err) {
-			warn(`[DataStoreService]: failed to load data for ${player.Name} (${id}): ${tostring(err)}`);
+			warn(
+				`[DataStoreService]: failed to load data for ${player.Name} (${id}): ${tostring(err)}`,
+			);
 			DataManager.setData(id, DEFAULT_DATA);
 		}
 
@@ -157,7 +159,9 @@ export class DataStoreService implements OnStart {
 
 		await doc
 			.close()
-			.catch((e) => warn(`[DataStoreService]: close failed for ${id}: ${tostring(e)}`));
+			.catch((e) =>
+				warn(`[DataStoreService]: close failed for ${id}: ${tostring(e)}`),
+			);
 		this.docs.delete(id);
 	}
 }

@@ -1,8 +1,8 @@
-import { Service, type OnStart } from "@flamework/core";
-import { Players, TeleportService } from "@rbxts/services";
-import { Clock, PLACE_IDS } from "@common/shared";
 import { DataStoreService } from "@common/server/data";
+import { Clock, PLACE_IDS } from "@common/shared";
+import { type OnStart, Service } from "@flamework/core";
 import { LobbyManager } from "@lobby/shared";
+import { Players, TeleportService } from "@rbxts/services";
 
 const LOBBY_COUNTDOWN = 15;
 

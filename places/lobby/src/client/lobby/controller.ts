@@ -1,13 +1,15 @@
 import { Controller, type OnStart } from "@flamework/core";
-import { effect } from "@rbxts/charm";
 import { LobbyManager, type LobbyPhase } from "@lobby/shared";
+import { effect } from "@rbxts/charm";
 
 @Controller({})
 export class LobbyController implements OnStart {
 	public onStart(): void {
 		effect(() => {
 			const state = LobbyManager.getState();
-			print(`[LobbyController] ${this.formatStatus(state.phase, state.countdown)}`);
+			print(
+				`[LobbyController] ${this.formatStatus(state.phase, state.countdown)}`,
+			);
 		});
 	}
 

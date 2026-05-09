@@ -1,8 +1,8 @@
-import { Service, type OnStart } from "@flamework/core";
-import { Players, TeleportService } from "@rbxts/services";
-import { Clock, PLACE_IDS } from "@common/shared";
 import { DataStoreService } from "@common/server/data";
+import { Clock, PLACE_IDS } from "@common/shared";
+import { type OnStart, Service } from "@flamework/core";
 import { GameManager } from "@game/shared";
+import { Players, TeleportService } from "@rbxts/services";
 
 const ROUND_DURATION = 60;
 

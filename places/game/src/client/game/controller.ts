@@ -1,13 +1,15 @@
 import { Controller, type OnStart } from "@flamework/core";
-import { effect } from "@rbxts/charm";
 import { GameManager, type GamePhase } from "@game/shared";
+import { effect } from "@rbxts/charm";
 
 @Controller({})
 export class GameController implements OnStart {
 	public onStart(): void {
 		effect(() => {
 			const state = GameManager.getState();
-			print(`[GameController] ${this.formatStatus(state.phase, state.timeRemaining)}`);
+			print(
+				`[GameController] ${this.formatStatus(state.phase, state.timeRemaining)}`,
+			);
 		});
 	}
 

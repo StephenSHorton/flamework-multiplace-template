@@ -1,5 +1,5 @@
-import { Flamework } from "@flamework/core";
 import { BUILD_HASH, BUILD_TIME } from "@common/shared/constants/build";
+import { Flamework } from "@flamework/core";
 
 print(`[SERVER] Build: ${BUILD_HASH} (${BUILD_TIME})`);
 
