@@ -12,11 +12,14 @@ Roblox multi-place template using **roblox-ts** + **Flamework** + **Charm** + **
 bun install               # install npm deps
 rokit install             # install Rojo at the pinned version
 
-bun run build             # build both places (lobby + game)
+bun run build             # build both places (lobby + game) — clean + emit
 bun run build:lobby
 bun run build:game
 
-bun run watch:lobby       # rebuilds the lobby on file change
+bun run check:lobby       # incremental compile — no clean, safe alongside serve:*
+bun run check:game
+
+bun run watch:lobby       # rebuilds the lobby on file change (incremental, no clean)
 bun run watch:game
 
 bun run serve:lobby       # Rojo on port 34872
@@ -265,3 +268,7 @@ For per-player cleanup, use a `Map<Player, Maid>` and clear on `onPlayerRemoving
 - Don't pass player state via `TeleportData`; let it follow through Lapis.
 - Don't edit historical migration entries.
 - Don't merge persistent + transient state in the same atom.
+- Don't run `build:lobby` / `build:game` while `serve:*` is running — the
+  clean step `rmSync`s the output dir, which makes Rojo error and
+  disconnect Studio. Use `check:lobby` / `check:game` for compile checks
+  during dev (incremental, no clean), or use `watch:*` alongside `serve:*`.
