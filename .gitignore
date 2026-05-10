@@ -5,3 +5,4 @@ places/*/include/
 places/*/flamework.build
 places/common/src/shared/constants/build.ts
 .DS_Store
+.claude/worktrees/
