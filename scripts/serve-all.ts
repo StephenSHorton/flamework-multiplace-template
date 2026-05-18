@@ -1,7 +1,7 @@
 import { spawn } from "node:child_process";
 
 function rojoServe(projectPath: string, port: number, label: string) {
-	const proc = spawn("rojo", ["serve", "--port", String(port), projectPath], {
+	const proc = spawn("rojo", ["serve", "--no-watch", "--port", String(port), projectPath], {
 		stdio: "pipe",
 		shell: true,
 	});

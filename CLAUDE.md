@@ -210,6 +210,53 @@ Don't connect `Players.PlayerAdded` directly. Use:
 
 To test real persistence in Studio, change the constant to `false` (and accept that two Studio instances will fight over the same player's session lock).
 
+## Local Library Development (Windows + Rojo)
+
+When developing an `@rbxts/*` library locally alongside this project, the standard pattern is to create a directory junction from `node_modules/@rbxts/<lib>/` to the library's repo. Rojo's filesystem watcher is unreliable across junctions (and across cross-directory `$path` references generally), so this template uses the **[rojo-push](https://github.com/StephenSHorton/rojo-push)** fork, which replaces auto-watch with a manual push trigger.
+
+### Setup
+
+Rokit installs the fork automatically — `rokit.toml` pins `rojo = "StephenSHorton/rojo-push@7.7.0-push.1"`. The binary name is still `rojo`, so VS Code Rojo plugin and the `serve:*` scripts keep working.
+
+### Workflow
+
+```bash
+# Terminal 1 — leave running. Use one serve per Place.
+bun run serve:all    # lobby on 34872, game on 34873; both with --no-watch
+
+# After every library rebuild (in this repo OR a sibling library):
+cd ../<lib> && bun run build && cd - && rojo push --port 34872 && rojo push --port 34873
+# Or push to just the place(s) you care about.
+```
+
+`rojo push` re-snapshots the project from disk, computes a diff, and sends it to the Studio plugin via the connection that's already open. No watchers, no restarts, no missed events.
+
+### Project file structure (optional but recommended)
+
+When a library lives outside `node_modules/` (e.g., a sibling repo), point each Place's `default.project.json` at the real on-disk path so the project file is explicit about where Rojo should look:
+
+```json
+"ReplicatedStorage": {
+  "rbxts_include": {
+    "$path": "../../include",
+    "node_modules": {
+      "$className": "Folder",
+      "@rbxts": {
+        "$path": "../../node_modules/@rbxts",
+        "<lib>": {
+          "$className": "Folder",
+          "out": {
+            "$path": "../../../<lib>/out"
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+Path depth: each Place's `default.project.json` lives at `places/<place>/default.project.json`, so `../../` reaches the repo root and `../../../` reaches its parent directory (where sibling library repos live). Adjust if your library lives elsewhere. TypeScript still resolves through `node_modules/@rbxts/<lib>` for types; Rojo follows `$path` to the library's real `out/`. This is now an *organisational* choice — with rojo-push, the watcher's junction limitations no longer force you to do this.
+
 ## Code style
 
 - **Tabs**, **double quotes** (Biome enforces).
@@ -268,7 +315,7 @@ For per-player cleanup, use a `Map<Player, Maid>` and clear on `onPlayerRemoving
 - Don't pass player state via `TeleportData`; let it follow through Lapis.
 - Don't edit historical migration entries.
 - Don't merge persistent + transient state in the same atom.
-- Don't run `build:lobby` / `build:game` while `serve:*` is running — the
-  clean step `rmSync`s the output dir, which makes Rojo error and
-  disconnect Studio. Use `check:lobby` / `check:game` for compile checks
-  during dev (incremental, no clean), or use `watch:*` alongside `serve:*`.
+- Builds are safe to run alongside `serve:*` — with rojo-push (`--no-watch`),
+  the clean step's `rmSync` doesn't race the watcher. After a build, run
+  `rojo push --port 34872` (lobby) / `rojo push --port 34873` (game) to
+  sync the rebuilt output to Studio.
