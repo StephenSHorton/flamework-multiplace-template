@@ -216,7 +216,7 @@ When developing an `@rbxts/*` library locally alongside this project, the standa
 
 ### Setup
 
-Rokit installs the fork automatically — `rokit.toml` pins `rojo = "StephenSHorton/rojo-push@7.7.0-push.1"`. The binary name is still `rojo`, so VS Code Rojo plugin and the `serve:*` scripts keep working.
+Rokit installs the fork automatically — `rokit.toml` pins `rojo = "StephenSHorton/rojo-push@7.7.0-push.3"`. The binary name is still `rojo`, so VS Code Rojo plugin and the `serve:*` scripts keep working.
 
 ### Workflow
 
@@ -259,9 +259,9 @@ Path depth: each Place's `default.project.json` lives at `places/<place>/default
 
 ## Code style
 
-- **Tabs**, **double quotes** (Biome enforces).
+- **Tabs**, **double quotes** (Biome enforces). `@rbxts/biome-plugin-roblox-ts` covers the roblox-ts Grit rules (plugin paths listed in `biome.json` — Biome 2.5.9 still resolves `extends` plugin paths relative to the project). ESLint still runs `eslint-plugin-roblox-ts` for the type-aware leftovers. Node helper scripts under `scripts/` have the linter disabled.
 - Use `@rbxts/maid` for connection cleanup. Never manually track `RBXScriptConnection`s.
-- Prefer `produce` from `@rbxts/immut` for state mutations (already used by `DataManager.updateData`, `LobbyManager.updateState`).
+- Prefer `produce` from `@rbxts/immut` for state mutations (already used by `DataManager.updateData`, `LobbyManager.updateState`). Charm 0.11 freezes atom values in Studio — never mutate a table you just read from an atom, and do not yield inside `effect()`.
 - Per-feature networking — define events on the place that owns them via module augmentation, not in a single monolith.
 - Barrel `index.ts` files in every directory; import `from "@common/shared"` not `from "@common/shared/data/state/manager"`.
 - **One module per file.** File name matches the primary export.

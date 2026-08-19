@@ -1,10 +1,14 @@
 import { spawn } from "node:child_process";
 
 function rojoServe(projectPath: string, port: number, label: string) {
-	const proc = spawn("rojo", ["serve", "--no-watch", "--port", String(port), projectPath], {
-		stdio: "pipe",
-		shell: true,
-	});
+	const proc = spawn(
+		"rojo",
+		["serve", "--no-watch", "--port", String(port), projectPath],
+		{
+			stdio: "pipe",
+			shell: true,
+		},
+	);
 
 	proc.stdout?.on("data", (chunk) => {
 		for (const line of String(chunk).split("\n")) {
