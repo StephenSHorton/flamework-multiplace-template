@@ -216,7 +216,7 @@ When developing an `@rbxts/*` library locally alongside this project, the standa
 
 ### Setup
 
-Rokit installs the fork automatically — `rokit.toml` pins `rojo = "StephenSHorton/rojo-push@7.7.0-push.3"`. The binary name is still `rojo`, so VS Code Rojo plugin and the `serve:*` scripts keep working.
+Rokit installs the fork automatically — `rokit.toml` pins `rojo = "StephenSHorton/rojo-push@7.7.0-push.4"`. The binary name is still `rojo`, so VS Code Rojo plugin and the `serve:*` scripts keep working.
 
 ### Workflow
 

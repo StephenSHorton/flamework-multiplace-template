@@ -33,7 +33,7 @@ bun run serve:all
 
 In Studio, install the Rojo plugin and connect each Place file to the matching port.
 
-> This template ships [rojo-push](https://github.com/StephenSHorton/rojo-push) (`rokit.toml` pins `StephenSHorton/rojo-push@7.7.0-push.3`). `serve:*` scripts run with `--no-watch`. After a build, run `bun run push:lobby` / `bun run push:game` / `bun run push:all` to sync to Studio. The watcher is intentionally disabled because filesystem events are unreliable across Windows junctions and cross-directory `$path` references.
+> This template ships [rojo-push](https://github.com/StephenSHorton/rojo-push) (`rokit.toml` pins `StephenSHorton/rojo-push@7.7.0-push.4`). `serve:*` scripts run with `--no-watch`. After a build, run `bun run push:lobby` / `bun run push:game` / `bun run push:all` to sync to Studio. The watcher is intentionally disabled because filesystem events are unreliable across Windows junctions and cross-directory `$path` references.
 
 ### Watch mode (incremental compile, no push)
 
