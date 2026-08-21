@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to agents working in this repository.
 
 ## Project Overview
 
@@ -42,6 +42,21 @@ tsconfig.base.json      shared compiler options + @common/* @lobby/* @game/* ali
 ```
 
 `places/common` is **never built standalone**. It only exists as a source tree that lobby and game pull in via `rootDirs: ["src", "../common/src"]`. Each Place's `default.project.json` mounts the compiled `common/` output as a sibling folder under each service.
+
+## World geometry
+
+Tangible world objects are **edit-time**, not spawned from services on Play.
+
+Break things into **small, named pieces** with maximum control:
+
+- Split a station/prop into **several ProceduralModels** (body, frame, attachments) rather than one mega-model.
+- Inside a model, keep **body, hardware, and interaction planes** as separate instances.
+- Prefer **ProceduralModel** generators (`OnGenerate`) so Size and attributes in Properties regenerate the object.
+- Prefer **EditableMesh** on `MeshPart`s for custom topology: recesses, arches, bevels, anything a box/wedge/cylinder can't do cleanly. Build vertices and triangles, then bake (`AssetService:CreateDataModelContentAsync` + `CreateMeshPartAsync`). Call `parameters.Pause()` before those yielding APIs.
+- Use primitive `Part`s only for simple collision, sensors, or hardware that already *is* a ball/cylinder.
+- Never fill a volume with a solid slab and overlay decorations — they z-fight. Either cut the shape into the EditableMesh or abut non-overlapping pieces.
+- Never set `BasePart.Position` when assembling; always `CFrame` / `PivotTo` (Position depenetrates and refuses overlaps).
+- Play-mode instance edits do not persist — generate and author in Edit.
 
 ## Path aliases
 
